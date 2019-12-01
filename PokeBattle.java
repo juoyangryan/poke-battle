@@ -43,9 +43,9 @@ public class PokeBattle extends Application {
 
 		//first pokemon box items
 		Label enemyName = new Label("Elon Musk");
-		Label enemyLvl = new Label(String.format("lvl. %d", 12));
+		Label enemyLvl = new Label(String.format("lvl. %d", 50));
 		ProgressBar enemyHealth = new ProgressBar();
-		enemyHealth.setProgress(0.25);
+		enemyHealth.setProgress(1);
 		enemyHealth.setStyle("-fx-accent: green;");
 
 		//enemy text
@@ -66,9 +66,9 @@ public class PokeBattle extends Application {
 
 		//first pokemon box items
 		Label allyName = new Label("Elon Musk");
-		Label allyLvl = new Label(String.format("lvl. %d", 12));
+		Label allyLvl = new Label(String.format("lvl. %d", 50));
 		ProgressBar allyHealth = new ProgressBar();
-		allyHealth.setProgress(0.25);
+		allyHealth.setProgress(1);
 		allyHealth.setStyle("-fx-accent: green;");
 
 		//ally text
@@ -92,54 +92,47 @@ public class PokeBattle extends Application {
 		pokeBox.setSpacing(40);
 		pokeBox.getChildren().addAll(enemy, ally);
 
+		//moves buttons
+		Button move1 = new Button("Metal Ball");
+		Button move2 = new Button("fat");
+		Button move3 = new Button("fatty");
+		Button move4 = new Button("fatcakes");
+
+		//menu gridPane
+      	GridPane menu = new GridPane();
+		menu.setMinSize(400, 200);
+		menu.setPadding(new Insets(10, 10, 10, 10));
+		menu.setVgap(5); 
+		menu.setHgap(5);
+		menu.setAlignment(Pos.CENTER);
+
 		//buttons
 		Button fight = new Button("FIGHT");
-		//fight.setOnAction(e -> )
+		fight.setOnAction(e -> {
+			menu.getChildren().clear();
+			menu.add(move1, 0, 0);
+			menu.add(move2, 1, 0);
+			menu.add(move3, 0, 1);
+			menu.add(move4, 1, 1);
+		});
 		Button bag = new Button("BAG");
 		Button pokemon = new Button("POKEMON");
 		Button run = new Button("RUN");
 
-		//buttons array
-		// HBox topMenu = new HBox();
-		// topMenu.setSpacing(10);
-		// topMenu.getChildren().addAll(fight, bag);
-		// HBox botMenu = new HBox();
-		// botMenu.setSpacing(10);
-		// botMenu.getChildren().addAll(pokemon, run);
-		// VBox menu = new VBox();
-		// menu.setSpacing(10);
-		// menu.getChildren().addAll(topMenu, botMenu);
+		menu.add(fight, 0, 0);
+		menu.add(bag, 1, 0);
+		menu.add(pokemon, 0, 1);
+		menu.add(run, 1, 1);
 
-		//Creating a Grid Pane 
-      	GridPane gridPane = new GridPane();    
-
-		//Setting size for the pane  
-		gridPane.setMinSize(400, 200); 
-
-		//Setting the padding  
-		gridPane.setPadding(new Insets(10, 10, 10, 10)); 
-
-		//Setting the vertical and horizontal gaps between the columns 
-		gridPane.setVgap(5); 
-		gridPane.setHgap(5);       
-
-		//Setting the Grid alignment 
-		gridPane.setAlignment(Pos.CENTER); 
-
-		//Arranging all the nodes in the grid 
-		gridPane.add(fight, 0, 0);
-		gridPane.add(bag, 1, 0);
-		gridPane.add(pokemon, 0, 1);
-		gridPane.add(run, 1, 1);
-
-		VBox finalView = new VBox();
-		finalView.setSpacing(30);
-		finalView.getChildren().addAll(pokeBox, gridPane);
+		//options view
+		VBox optionsView = new VBox();
+		optionsView.setSpacing(30);
+		optionsView.getChildren().addAll(pokeBox, menu);
 
 		//sets scene to stage
-		Scene scene = new Scene(finalView, 800, 800);
+		Scene scene1 = new Scene(optionsView, 800, 800);
 		stage.setTitle("Pokemon Battle");
-		stage.setScene(scene);
+		stage.setScene(scene1);
 		stage.show();
 	}
 }
