@@ -28,6 +28,12 @@ import javafx.geometry.Insets;
 
 
 public class PokeBattle extends Application {
+	GridPane menu = new GridPane();
+	ProgressBar enemyHealth = new ProgressBar();
+	ProgressBar allyHealth = new ProgressBar();
+	double enemyCurrent = 1;
+	double allyCurrent = 1;
+
 	public void start (Stage stage) throws FileNotFoundException {
 		//first pokemon
 		Image elon = new Image(new FileInputStream("elon.jpg"));
@@ -44,8 +50,7 @@ public class PokeBattle extends Application {
 		//first pokemon box items
 		Label enemyName = new Label("Elon Musk");
 		Label enemyLvl = new Label(String.format("lvl. %d", 50));
-		ProgressBar enemyHealth = new ProgressBar();
-		enemyHealth.setProgress(1);
+		enemyHealth.setProgress(enemyCurrent);
 		enemyHealth.setStyle("-fx-accent: green;");
 
 		//enemy text
@@ -67,7 +72,6 @@ public class PokeBattle extends Application {
 		//first pokemon box items
 		Label allyName = new Label("Elon Musk");
 		Label allyLvl = new Label(String.format("lvl. %d", 50));
-		ProgressBar allyHealth = new ProgressBar();
 		allyHealth.setProgress(1);
 		allyHealth.setStyle("-fx-accent: green;");
 
@@ -92,14 +96,7 @@ public class PokeBattle extends Application {
 		pokeBox.setSpacing(40);
 		pokeBox.getChildren().addAll(enemy, ally);
 
-		//moves buttons
-		Button move1 = new Button("Metal Ball");
-		Button move2 = new Button("fat");
-		Button move3 = new Button("fatty");
-		Button move4 = new Button("fatcakes");
-
 		//menu gridPane
-      	GridPane menu = new GridPane();
 		menu.setMinSize(400, 200);
 		menu.setPadding(new Insets(10, 10, 10, 10));
 		menu.setVgap(5); 
@@ -109,11 +106,7 @@ public class PokeBattle extends Application {
 		//buttons
 		Button fight = new Button("FIGHT");
 		fight.setOnAction(e -> {
-			menu.getChildren().clear();
-			menu.add(move1, 0, 0);
-			menu.add(move2, 1, 0);
-			menu.add(move3, 0, 1);
-			menu.add(move4, 1, 1);
+			goToMoves();
 		});
 		Button bag = new Button("BAG");
 		Button pokemon = new Button("POKEMON");
@@ -134,5 +127,32 @@ public class PokeBattle extends Application {
 		stage.setTitle("Pokemon Battle");
 		stage.setScene(scene1);
 		stage.show();
+	}
+
+	public void goToMoves() {
+		//moves buttons
+		Button move1 = new Button("Metal Ball");
+		move1.setOnAction(e -> {
+			double dmg = 0.2;
+			enemyCurrent -= dmg;
+			enemyHealth.setProgress(enemyCurrent);
+			enemyAttack();
+		});
+		Button move2 = new Button("fat");
+		Button move3 = new Button("fatty");
+		Button move4 = new Button("fatcakes");
+
+		menu.getChildren().clear();
+		menu.add(move1, 0, 0);
+		menu.add(move2, 1, 0);
+		menu.add(move3, 0, 1);
+		menu.add(move4, 1, 1);
+	}
+
+	public void enemyAttack() {
+		//add attack mechanism
+		double dmg = 0.2;
+		allyCurrent -= dmg;
+		allyHealth.setProgress(allyCurrent);
 	}
 }
