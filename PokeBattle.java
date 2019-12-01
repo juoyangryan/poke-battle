@@ -33,6 +33,15 @@ public class PokeBattle extends Application {
 	ProgressBar allyHealth = new ProgressBar();
 	double enemyCurrent = 1;
 	double allyCurrent = 1;
+	Move tackle = new Move("Tackle", 20, "normal");
+	Move ember = new Move("Ember", 20, "fire");
+	Move fireBlast = new Move("Fire blast", 50, "fire");
+	Move sleep = new Move("Sleep", 0, "normal");
+	Move[] allymoves = new Move[]{tackle, ember, fireBlast, sleep};
+	Pokemon allyPokemon = new Pokemon("Charizard", 50, 100, 80, "fire", allymoves);
+	Pokemon currentAlly = allyPokemon;
+	Pokemon enemyPokemon = new Pokemon("Charizard", 50, 100, 80, "fire", allymoves);
+	Pokemon currentEnemy = enemyPokemon;
 
 	public void start (Stage stage) throws FileNotFoundException {
 		//first pokemon
@@ -47,7 +56,7 @@ public class PokeBattle extends Application {
 		image2.setFitHeight(200);
 		image2.setPreserveRatio(true);
 
-		//first pokemon box items
+		//enemy pokemon box items
 		Label enemyName = new Label("Elon Musk");
 		Label enemyLvl = new Label(String.format("lvl. %d", 50));
 		enemyHealth.setProgress(enemyCurrent);
@@ -69,9 +78,9 @@ public class PokeBattle extends Application {
 		enemy.setAlignment(Pos.CENTER);
 		enemy.getChildren().addAll(enemyBox, image);
 
-		//first pokemon box items
-		Label allyName = new Label("Elon Musk");
-		Label allyLvl = new Label(String.format("lvl. %d", 50));
+		//ally pokemon box items
+		Label allyName = new Label(allyPokemon.getName());
+		Label allyLvl = new Label(String.format("lvl. %d", allyPokemon.getLevel()));
 		allyHealth.setProgress(1);
 		allyHealth.setStyle("-fx-accent: green;");
 
@@ -131,28 +140,48 @@ public class PokeBattle extends Application {
 
 	public void goToMoves() {
 		//moves buttons
-		Button move1 = new Button("Metal Ball");
-		move1.setOnAction(e -> {
-			double dmg = 0.2;
-			enemyCurrent -= dmg;
-			enemyHealth.setProgress(enemyCurrent);
-			enemyAttack();
+		Move move1 = currentAlly.getMoves()[0];
+		Move move2 = currentAlly.getMoves()[1];
+		Move move3 = currentAlly.getMoves()[2];
+		Move move4 = currentAlly.getMoves()[3];
+
+		Button move1Button = new Button(move1.getName());
+		move1Button.setOnAction(e -> {
+			allyAttack(move1);
 		});
-		Button move2 = new Button("fat");
-		Button move3 = new Button("fatty");
-		Button move4 = new Button("fatcakes");
+		Button move2Button = new Button(move2.getName());
+		move2Button.setOnAction(e -> {
+			allyAttack(move2);
+		});
+		Button move3Button = new Button(move3.getName());
+		move3Button.setOnAction(e -> {
+			allyAttack(move3);
+		});
+		Button move4Button = new Button(move4.getName());
+		move4Button.setOnAction(e -> {
+			allyAttack(move4);
+		});
 
 		menu.getChildren().clear();
-		menu.add(move1, 0, 0);
-		menu.add(move2, 1, 0);
-		menu.add(move3, 0, 1);
-		menu.add(move4, 1, 1);
+		menu.add(move1Button, 0, 0);
+		menu.add(move2Button, 1, 0);
+		menu.add(move3Button, 0, 1);
+		menu.add(move4Button, 1, 1);
+	}
+
+	public void allyAttack(Move move) {
+		int power = move.getPower();
+		double dmg = currentEnemy.compareType(move) * power * (currentEnemy.getLevel() / 100.0);
+		currentEnemy.setCurrentHP((currentEnemy.getCurrentHP() - dmg));
+		System.out.println(dmg);
+		enemyHealth.setProgress(currentEnemy.getCurrentHP() / currentEnemy.getMaxHP());
+		enemyAttack();
 	}
 
 	public void enemyAttack() {
 		//add attack mechanism
-		double dmg = 0.2;
-		allyCurrent -= dmg;
-		allyHealth.setProgress(allyCurrent);
+		double dmg = 20;
+		currentAlly.setCurrentHP((currentAlly.getCurrentHP() - dmg));
+		allyHealth.setProgress(currentAlly.getCurrentHP() / currentAlly.getMaxHP());
 	}
 }
