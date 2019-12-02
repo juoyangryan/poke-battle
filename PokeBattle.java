@@ -26,9 +26,6 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.GridPane;
 import javafx.geometry.Insets;
 import java.util.Random;
-import javafx.util.Duration;
-import javafx.animation.PauseTransition;
-
 
 public class PokeBattle extends Application {
 	GridPane menu = new GridPane();
@@ -37,11 +34,16 @@ public class PokeBattle extends Application {
 	Move tackle = new Move("Tackle", 20, "normal");
 	Move ember = new Move("Ember", 20, "fire");
 	Move fireBlast = new Move("Fire blast", 70, "fire");
-	Move sleep = new Move("Sleep", 0, "normal");
-	Move[] allymoves = new Move[]{tackle, ember, fireBlast, sleep};
-	Pokemon allyPokemon = new Pokemon("Charizard", 50, 100, 80, "fire", allymoves);
+	Move tickle = new Move("Tickle", 10, "normal");
+	Move[] charmanderMoves = new Move[]{tackle, ember, fireBlast, tickle};
+
+	Move vineWhip = new Move("Vine whip", 20, "grass");
+	Move razorLeaf = new Move("Razor leaf", 70, "grass");
+	Move[] bulbasaurMoves = new Move[]{tackle, vineWhip, razorLeaf, tickle};
+
+	Pokemon allyPokemon = new Pokemon("Charmander", 50, 100, 80, "FIRE", charmanderMoves);
 	Pokemon currentAlly = allyPokemon;
-	Pokemon enemyPokemon = new Pokemon("Charizard", 50, 100, 80, "fire", allymoves);
+	Pokemon enemyPokemon = new Pokemon("Bulbasaur", 50, 100, 70, "GRASS", bulbasaurMoves);
 	Pokemon currentEnemy = enemyPokemon;
 	Button fight;
 	Button bag;
@@ -51,15 +53,15 @@ public class PokeBattle extends Application {
 
 	public void start (Stage stage) throws FileNotFoundException {
 		//first pokemon
-		Image elon = new Image(new FileInputStream("elon.jpg"));
-		ImageView image = new ImageView(elon);
-		image.setFitHeight(200);
+		Image bulbasaur = new Image(new FileInputStream("bulbasaur.png"));
+		ImageView image = new ImageView(bulbasaur);
+		image.setFitHeight(150);
 		image.setPreserveRatio(true);
 
 		//second pokemon
-		Image elon2 = new Image(new FileInputStream("elon.jpg"));
-		ImageView image2 = new ImageView(elon2);
-		image2.setFitHeight(200);
+		Image charmander = new Image(new FileInputStream("charmander.png"));
+		ImageView image2 = new ImageView(charmander);
+		image2.setFitHeight(250);
 		image2.setPreserveRatio(true);
 
 		//enemy pokemon box items
@@ -73,22 +75,34 @@ public class PokeBattle extends Application {
 		enemyText.setSpacing(10);
 		enemyText.getChildren().addAll(enemyName, enemyLvl);
 
+		//enemy health box
+		HBox enemyHealthBox = new HBox();
+		Label hp1 = new Label("HP: ");
+		enemyHealthBox.getChildren().addAll(hp1, enemyHealth);
+
+
 		//EnemyBox
 		VBox enemyBox = new VBox();
 		enemyBox.setSpacing(10);
-		enemyBox.getChildren().addAll(enemyText, enemyHealth);
+		enemyBox.getChildren().addAll(enemyText, enemyHealthBox);
 
 		//Enemy
 		HBox enemy = new HBox();
 		enemy.setSpacing(10);
 		enemy.setAlignment(Pos.CENTER);
 		enemy.getChildren().addAll(enemyBox, image);
+		enemy.setId("enemy");
 
 		//ally pokemon box items
 		Label allyName = new Label(currentAlly.getName());
 		Label allyLvl = new Label(String.format("lvl. %d", currentAlly.getLevel()));
 		allyHealth.setProgress(currentAlly.getCurrentHP() / currentAlly.getMaxHP());
 		allyHealth.setStyle("-fx-accent: green;");
+
+		//ally Health box
+		HBox allyHealthBox = new HBox();
+		Label hp2 = new Label("HP: ");
+		allyHealthBox.getChildren().addAll(hp2, allyHealth);
 
 		//ally text
 		HBox allyText = new HBox();
@@ -98,18 +112,20 @@ public class PokeBattle extends Application {
 		//allyBox
 		VBox allyBox = new VBox();
 		allyBox.setSpacing(10);
-		allyBox.getChildren().addAll(allyText, allyHealth);
+		allyBox.getChildren().addAll(allyText, allyHealthBox);
 
 		//ally
 		HBox ally = new HBox();
 		ally.setAlignment(Pos.CENTER);
 		ally.setSpacing(10);
 		ally.getChildren().addAll(image2, allyBox);
+		ally.setId("ally");
 
 		//pokemon vbox
 		VBox pokeBox = new VBox();
 		pokeBox.setSpacing(40);
 		pokeBox.getChildren().addAll(enemy, ally);
+		pokeBox.setId("pokeBox");
 
 		//menu gridPane
 		menu.setMinSize(400, 200);
@@ -133,6 +149,10 @@ public class PokeBattle extends Application {
 		bag = new Button("BAG");
 		pokemon = new Button("POKEMON");
 		run = new Button("RUN");
+		run.setOnAction(e -> {
+			status.setText("Got away safely!");
+			System.exit(0);
+		});
 
 		menu.add(fight, 0, 0);
 		menu.add(bag, 1, 0);
@@ -145,9 +165,10 @@ public class PokeBattle extends Application {
 		optionsView.getChildren().addAll(pokeBox, bottomRow);
 
 		//sets scene to stage
-		Scene scene1 = new Scene(optionsView, 800, 800);
+		Scene scene = new Scene(optionsView, 800, 800);
+		scene.getStylesheets().add("application.css");
 		stage.setTitle("Pokemon Battle");
-		stage.setScene(scene1);
+		stage.setScene(scene);
 		stage.show();
 	}
 
@@ -187,11 +208,19 @@ public class PokeBattle extends Application {
 		double dmg = currentEnemy.compareType(move) * power * (currentAlly.getLevel() / 100.0);
 		currentEnemy.setCurrentHP((currentEnemy.getCurrentHP() - dmg));
 		enemyHealth.setProgress(currentEnemy.getCurrentHP() / currentEnemy.getMaxHP());
+		// Runnable allyAttackStatus = new Runnable() {
+		// 	public void run() {
+		// 		changeStatus(3, move);
+		// 	}
+		// };
+		// scheduler.schedule(allyAttackStatus, 1, TimeUnit.SECONDS);
 		changeStatus(3, move);
 		changeStatus(5, move);
 		enemyAttack();
 		mainMenu();
 	}
+
+
 
 	public void mainMenu() {
 		menu.getChildren().clear();

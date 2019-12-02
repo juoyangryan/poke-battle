@@ -1,0 +1,30 @@
+.root {
+	-fx-background-color: #a5e6bd;
+	-fx-font-size: 20 pt;
+	-fx-font-weight: bold;
+}
+
+.button {
+	-fx-font: 16px "Serif";
+    -fx-padding: 10;
+    -fx-background-color: #CCFF99;
+}
+
+#ally {
+	-fx-alignment: CENTER-LEFT;
+	-fx-padding: 0 0 0 130px;
+}
+
+#enemy {
+	-fx-alignment: CENTER-RIGHT;
+	-fx-padding: 70px 60px 0 0;
+}
+
+
+
+#pokeBox {
+	-fx-background-image: url("grass.png");
+	-fx-background-repeat: stretch;   
+    -fx-background-size: 900 506;
+    -fx-background-position: center center;
+}
