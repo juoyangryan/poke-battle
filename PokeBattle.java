@@ -25,23 +25,29 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.GridPane;
 import javafx.geometry.Insets;
+import java.util.Random;
+import javafx.util.Duration;
+import javafx.animation.PauseTransition;
 
 
 public class PokeBattle extends Application {
 	GridPane menu = new GridPane();
 	ProgressBar enemyHealth = new ProgressBar();
 	ProgressBar allyHealth = new ProgressBar();
-	double enemyCurrent = 1;
-	double allyCurrent = 1;
 	Move tackle = new Move("Tackle", 20, "normal");
 	Move ember = new Move("Ember", 20, "fire");
-	Move fireBlast = new Move("Fire blast", 50, "fire");
+	Move fireBlast = new Move("Fire blast", 70, "fire");
 	Move sleep = new Move("Sleep", 0, "normal");
 	Move[] allymoves = new Move[]{tackle, ember, fireBlast, sleep};
 	Pokemon allyPokemon = new Pokemon("Charizard", 50, 100, 80, "fire", allymoves);
 	Pokemon currentAlly = allyPokemon;
 	Pokemon enemyPokemon = new Pokemon("Charizard", 50, 100, 80, "fire", allymoves);
 	Pokemon currentEnemy = enemyPokemon;
+	Button fight;
+	Button bag;
+	Button pokemon;
+	Button run;
+	Label status;
 
 	public void start (Stage stage) throws FileNotFoundException {
 		//first pokemon
@@ -57,9 +63,9 @@ public class PokeBattle extends Application {
 		image2.setPreserveRatio(true);
 
 		//enemy pokemon box items
-		Label enemyName = new Label("Elon Musk");
-		Label enemyLvl = new Label(String.format("lvl. %d", 50));
-		enemyHealth.setProgress(enemyCurrent);
+		Label enemyName = new Label(currentEnemy.getName());
+		Label enemyLvl = new Label(String.format("lvl. %d", currentEnemy.getLevel()));
+		enemyHealth.setProgress(currentEnemy.getCurrentHP() / currentEnemy.getMaxHP());
 		enemyHealth.setStyle("-fx-accent: green;");
 
 		//enemy text
@@ -79,9 +85,9 @@ public class PokeBattle extends Application {
 		enemy.getChildren().addAll(enemyBox, image);
 
 		//ally pokemon box items
-		Label allyName = new Label(allyPokemon.getName());
-		Label allyLvl = new Label(String.format("lvl. %d", allyPokemon.getLevel()));
-		allyHealth.setProgress(1);
+		Label allyName = new Label(currentAlly.getName());
+		Label allyLvl = new Label(String.format("lvl. %d", currentAlly.getLevel()));
+		allyHealth.setProgress(currentAlly.getCurrentHP() / currentAlly.getMaxHP());
 		allyHealth.setStyle("-fx-accent: green;");
 
 		//ally text
@@ -112,14 +118,21 @@ public class PokeBattle extends Application {
 		menu.setHgap(5);
 		menu.setAlignment(Pos.CENTER);
 
+		//Textbox
+		status = new Label(String.format("What will %s do?", currentAlly.getName()));
+		HBox bottomRow = new HBox();
+		bottomRow.setSpacing(30);
+		bottomRow.getChildren().addAll(status, menu);
+
 		//buttons
-		Button fight = new Button("FIGHT");
+		fight = new Button("FIGHT");
 		fight.setOnAction(e -> {
 			goToMoves();
+			changeStatus(2);
 		});
-		Button bag = new Button("BAG");
-		Button pokemon = new Button("POKEMON");
-		Button run = new Button("RUN");
+		bag = new Button("BAG");
+		pokemon = new Button("POKEMON");
+		run = new Button("RUN");
 
 		menu.add(fight, 0, 0);
 		menu.add(bag, 1, 0);
@@ -129,7 +142,7 @@ public class PokeBattle extends Application {
 		//options view
 		VBox optionsView = new VBox();
 		optionsView.setSpacing(30);
-		optionsView.getChildren().addAll(pokeBox, menu);
+		optionsView.getChildren().addAll(pokeBox, bottomRow);
 
 		//sets scene to stage
 		Scene scene1 = new Scene(optionsView, 800, 800);
@@ -171,17 +184,65 @@ public class PokeBattle extends Application {
 
 	public void allyAttack(Move move) {
 		int power = move.getPower();
-		double dmg = currentEnemy.compareType(move) * power * (currentEnemy.getLevel() / 100.0);
+		double dmg = currentEnemy.compareType(move) * power * (currentAlly.getLevel() / 100.0);
 		currentEnemy.setCurrentHP((currentEnemy.getCurrentHP() - dmg));
-		System.out.println(dmg);
 		enemyHealth.setProgress(currentEnemy.getCurrentHP() / currentEnemy.getMaxHP());
+		changeStatus(3, move);
+		changeStatus(5, move);
 		enemyAttack();
+		mainMenu();
+	}
+
+	public void mainMenu() {
+		menu.getChildren().clear();
+		menu.add(fight, 0, 0);
+		menu.add(bag, 1, 0);
+		menu.add(pokemon, 0, 1);
+		menu.add(run, 1, 1);
+		changeStatus(1);
 	}
 
 	public void enemyAttack() {
-		//add attack mechanism
-		double dmg = 20;
+		Random rand = new Random();
+		int randInt = rand.nextInt(4);
+		Move move = currentEnemy.getMoves()[randInt];
+		int power = move.getPower();
+		double dmg = currentAlly.compareType(move) * power * (currentEnemy.getLevel() / 100.0);
 		currentAlly.setCurrentHP((currentAlly.getCurrentHP() - dmg));
 		allyHealth.setProgress(currentAlly.getCurrentHP() / currentAlly.getMaxHP());
+		changeStatus(4, move);
+		changeStatus(6, move);
+		if (currentAlly.isFainted()) {
+			status.setText(String.format("%s fainted!", currentAlly.getName()));
+		}
+	}
+
+	public void changeStatus(int option) {
+		if (option == 1)
+			status.setText(String.format("What will %s do?", currentAlly.getName()));
+		else if (option == 2)
+			status.setText("Choose a move.");
+	}
+
+	public void changeStatus(int option, Move move) {
+		if (option == 3) {
+			status.setText(String.format("%s used %s!", currentAlly.getName(), move.getName()));
+		} else if (option == 4) {
+			status.setText(String.format("%s used %s!", currentEnemy.getName(), move.getName()));
+		} else if (option == 5) {
+			//for ally moves on enemy
+			double effective = currentEnemy.compareType(move);
+			if (effective == 0.5)
+				status.setText("It's not very effective...");
+			else if (effective == 2.0)
+				status.setText("It's super effective!");
+		} else if (option == 6) {
+			//for enemy moves on ally
+			double effective = currentAlly.compareType(move);
+			if (effective == 0.5)
+				status.setText("It's not very effective...");
+			else if (effective == 2.0)
+				status.setText("It's super effective!");
+		}
 	}
 }
