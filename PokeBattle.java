@@ -43,7 +43,7 @@ public class PokeBattle extends Application {
 
 	Pokemon allyPokemon = new Pokemon("Charmander", 50, 100, 80, "FIRE", charmanderMoves);
 	Pokemon currentAlly = allyPokemon;
-	Pokemon enemyPokemon = new Pokemon("Bulbasaur", 50, 100, 70, "GRASS", bulbasaurMoves);
+	Pokemon enemyPokemon = new Pokemon("Bulbasaur", 40, 80, 70, "GRASS", bulbasaurMoves);
 	Pokemon currentEnemy = enemyPokemon;
 	Button fight;
 	Button bag;
@@ -136,9 +136,12 @@ public class PokeBattle extends Application {
 
 		//Textbox
 		status = new Label(String.format("What will %s do?", currentAlly.getName()));
+		status.setId("status");
+		menu.setId("menu");
 		HBox bottomRow = new HBox();
 		bottomRow.setSpacing(30);
 		bottomRow.getChildren().addAll(status, menu);
+		bottomRow.setId("bottomRow");
 
 		//buttons
 		fight = new Button("FIGHT");
@@ -216,6 +219,11 @@ public class PokeBattle extends Application {
 		// scheduler.schedule(allyAttackStatus, 1, TimeUnit.SECONDS);
 		changeStatus(3, move);
 		changeStatus(5, move);
+		if (currentEnemy.isFainted()) {
+			status.setText(String.format("%s fainted!", currentEnemy.getName()));
+			System.out.println(String.format("%s fainted!", currentEnemy.getName()));
+			System.exit(0);
+		}
 		enemyAttack();
 		mainMenu();
 	}
@@ -243,6 +251,8 @@ public class PokeBattle extends Application {
 		changeStatus(6, move);
 		if (currentAlly.isFainted()) {
 			status.setText(String.format("%s fainted!", currentAlly.getName()));
+			System.out.println(String.format("%s fainted!", currentAlly.getName()));
+			System.exit(0);
 		}
 	}
 

@@ -1,5 +1,5 @@
 .root {
-	-fx-background-color: #a5e6bd;
+	-fx-background-color: linear-gradient(#aeebea, #119e9c);
 	-fx-font-size: 20 pt;
 	-fx-font-weight: bold;
 }
@@ -8,6 +8,7 @@
 	-fx-font: 16px "Serif";
     -fx-padding: 10;
     -fx-background-color: #CCFF99;
+
 }
 
 #ally {
@@ -20,11 +21,23 @@
 	-fx-padding: 70px 60px 0 0;
 }
 
+#status {
+	-fx-background-color: #cccccc;
+	-fx-border-color: grey;
+    -fx-border-width: 5;
+	-fx-effect: dropshadow(three-pass-box, #5a5c5c, 30, 0.5, 0, 0);
+}
 
+#menu {
+	-fx-background-color: #cccccc;
+	-fx-border-color: grey;
+    -fx-border-width: 5;
+	-fx-effect: dropshadow(three-pass-box, #5a5c5c, 30, 0.5, 0, 0);
+}
 
 #pokeBox {
 	-fx-background-image: url("grass.png");
-	-fx-background-repeat: stretch;   
+	-fx-background-repeat: stretch;
     -fx-background-size: 900 506;
     -fx-background-position: center center;
 }
