@@ -7,8 +7,9 @@ public class Pokemon {
     private Move[] moves;
     private String type;
     private boolean fainted;
+    private String image;
 
-    public Pokemon(String n, int l, double h, int a, String t, Move... move) {
+    public Pokemon(String n, int l, double h, int a, String t, String i, Move... move) {
         name = n;
         level = l;
         maxHP = h;
@@ -16,6 +17,11 @@ public class Pokemon {
         type = t;
         currentHP = maxHP;
         moves = move;
+        image = i;
+    }
+
+    public String getImage() {
+        return image;
     }
 
     public String getName() {

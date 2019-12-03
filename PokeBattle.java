@@ -4,6 +4,7 @@
  * @author jchen824
  * @version 1.0
  */
+
 //javac --module-path javafx-sdk-11.0.2/lib --add-modules=javafx.controls PokeBattle.java
 //java --module-path javafx-sdk-11.0.2/lib --add-modules=javafx.controls PokeBattle
 import java.io.FileInputStream; 
@@ -31,42 +32,83 @@ public class PokeBattle extends Application {
 	GridPane menu = new GridPane();
 	ProgressBar enemyHealth = new ProgressBar();
 	ProgressBar allyHealth = new ProgressBar();
-	Move tackle = new Move("Tackle", 20, "normal");
-	Move ember = new Move("Ember", 20, "fire");
-	Move fireBlast = new Move("Fire blast", 70, "fire");
-	Move tickle = new Move("Tickle", 10, "normal");
+	Move tackle = new Move("Tackle", 20, "NORMAL");
+	Move ember = new Move("Ember", 20, "FIRE");
+	Move fireBlast = new Move("Fire blast", 70, "FIRE");
+	Move tickle = new Move("Tickle", 10, "NORMAL");
+	Move vineWhip = new Move("Vine whip", 20, "GRASS");
+	Move bubble = new Move("Bubble", 20, "WATER");
+	Move bubblebeam = new Move("Bubblebeam", 50, "WATER");
+	Move hydropump = new Move("Hydropump", 70, "WATER");
+	Move razorLeaf = new Move("Razor leaf", 70, "GRASS");
+	Move wingAttack = new Move("Wing Attack", 70, "FLYING");
+	Move peck = new Move("Peck", 30, "FLYING");
+	Move thunderbolt = new Move("Thunderbolt", 40, "ELECTRIC");
+	Move thunder = new Move("Thunder", 70, "ELECTRIC");
+	Move psychic = new Move("Psychic", 70, "PSYCHIC");
+	Move psyshock = new Move("Psyshock", 20, "PSYCHIC");
+	Move icefang = new Move("Ice Fang", 20, "ICE");
+	Move blizzard = new Move("Blizzard", 20, "ICE");
+
 	Move[] charmanderMoves = new Move[]{tackle, ember, fireBlast, tickle};
-
-	Move vineWhip = new Move("Vine whip", 20, "grass");
-	Move razorLeaf = new Move("Razor leaf", 70, "grass");
 	Move[] bulbasaurMoves = new Move[]{tackle, vineWhip, razorLeaf, tickle};
+	Move[] squirtleMoves = new Move[]{tackle, bubble, bubblebeam, hydropump};
+	Move[] victreebellMoves = new Move[]{tackle, vineWhip, razorLeaf, tickle};
+	Move[] pidgeyMoves = new Move[]{tackle, wingAttack, peck, tickle};
+	Move[] pikachuMoves = new Move[]{tackle, thunderbolt, thunder, tickle};
+	Move[] mrmimeMoves = new Move[]{tackle, psychic, psyshock, tickle};
+	Move[] suicuneMoves = new Move[]{tackle, icefang, blizzard, tickle};
 
-	Pokemon allyPokemon = new Pokemon("Charmander", 50, 100, 80, "FIRE", charmanderMoves);
-	Pokemon currentAlly = allyPokemon;
-	Pokemon enemyPokemon = new Pokemon("Bulbasaur", 40, 80, 70, "GRASS", bulbasaurMoves);
-	Pokemon currentEnemy = enemyPokemon;
+	Pokemon charmander = new Pokemon("Charmander", 50, 100, 80, "FIRE", "charmander.png", charmanderMoves);
+	Pokemon bulbasaur = new Pokemon("Bulbasaur", 40, 80, 70, "GRASS", "bulbasaur.png", bulbasaurMoves);
+	Pokemon squirtle = new Pokemon("Squirtle", 50, 100, 80, "WATER", "squirtle.png", squirtleMoves);
+	Pokemon victreebell = new Pokemon("Victreebell", 50, 100, 80, "GRASS", "victreebell.png", victreebellMoves);
+	Pokemon pidgey = new Pokemon("Pidgey", 50, 100, 80, "FLYING", "pidgey.png", pidgeyMoves);
+	Pokemon pikachu = new Pokemon("Pikachu", 50, 100, 80, "ELECTRIC", "pikachu.png", pikachuMoves);
+	Pokemon mrmime = new Pokemon("Mr. Mime", 50, 100, 80, "PSYCHIC", "mrmime.png", mrmimeMoves);
+	Pokemon suicune = new Pokemon("Suicune", 50, 100, 80, "ICE", "suicune.png", suicuneMoves);
+	Pokemon[] enemyList = {bulbasaur, squirtle, pidgey, suicune};
+	Pokemon[] allyList = {charmander, victreebell, mrmime, pikachu};
+	Pokemon currentAlly = allyList[0];
+	Pokemon currentEnemy = enemyList[0];
+
+	Image enemyImg;
+	ImageView image;
+	Image allyImg;
+	ImageView image2;
 	Button fight;
 	Button bag;
 	Button pokemon;
 	Button run;
+	Button potion;
+	Button continueMenuButton;
+	int potionTotal = 5;
 	Label status;
+	Label enemyName;
+	Label enemyLvl;
+	Label allyName;
+	Label allyLvl;
+	Button poke1 = new Button(allyList[0].getName());
+	Button poke2 = new Button(allyList[1].getName());
+	Button poke3 = new Button(allyList[2].getName());
+	Button poke4 = new Button(allyList[3].getName());
 
 	public void start (Stage stage) throws FileNotFoundException {
 		//first pokemon
-		Image bulbasaur = new Image(new FileInputStream("bulbasaur.png"));
-		ImageView image = new ImageView(bulbasaur);
+		enemyImg = new Image(new FileInputStream(currentEnemy.getImage()));
+		image = new ImageView(enemyImg);
 		image.setFitHeight(150);
 		image.setPreserveRatio(true);
 
 		//second pokemon
-		Image charmander = new Image(new FileInputStream("charmander.png"));
-		ImageView image2 = new ImageView(charmander);
+		allyImg = new Image(new FileInputStream(currentAlly.getImage()));
+		image2 = new ImageView(allyImg);
 		image2.setFitHeight(250);
 		image2.setPreserveRatio(true);
 
 		//enemy pokemon box items
-		Label enemyName = new Label(currentEnemy.getName());
-		Label enemyLvl = new Label(String.format("lvl. %d", currentEnemy.getLevel()));
+		enemyName = new Label(currentEnemy.getName());
+		enemyLvl = new Label(String.format("lvl. %d", currentEnemy.getLevel()));
 		enemyHealth.setProgress(currentEnemy.getCurrentHP() / currentEnemy.getMaxHP());
 		enemyHealth.setStyle("-fx-accent: green;");
 
@@ -94,8 +136,8 @@ public class PokeBattle extends Application {
 		enemy.setId("enemy");
 
 		//ally pokemon box items
-		Label allyName = new Label(currentAlly.getName());
-		Label allyLvl = new Label(String.format("lvl. %d", currentAlly.getLevel()));
+		allyName = new Label(currentAlly.getName());
+		allyLvl = new Label(String.format("lvl. %d", currentAlly.getLevel()));
 		allyHealth.setProgress(currentAlly.getCurrentHP() / currentAlly.getMaxHP());
 		allyHealth.setStyle("-fx-accent: green;");
 
@@ -149,9 +191,19 @@ public class PokeBattle extends Application {
 			goToMoves();
 			changeStatus(2);
 		});
+		fight.setMinWidth(100);
 		bag = new Button("BAG");
+		bag.setOnAction(e -> {
+			itemView();
+		});
+		bag.setMinWidth(100);
 		pokemon = new Button("POKEMON");
+		pokemon.setOnAction(e -> {
+			changeAllyPokemon();
+		});
+		pokemon.setMinWidth(100);
 		run = new Button("RUN");
+		run.setMinWidth(100);
 		run.setOnAction(e -> {
 			status.setText("Got away safely!");
 			System.exit(0);
@@ -186,18 +238,22 @@ public class PokeBattle extends Application {
 		move1Button.setOnAction(e -> {
 			allyAttack(move1);
 		});
+		move1Button.setMinWidth(100);
 		Button move2Button = new Button(move2.getName());
 		move2Button.setOnAction(e -> {
 			allyAttack(move2);
 		});
+		move2Button.setMinWidth(100);
 		Button move3Button = new Button(move3.getName());
 		move3Button.setOnAction(e -> {
 			allyAttack(move3);
 		});
+		move3Button.setMinWidth(100);
 		Button move4Button = new Button(move4.getName());
 		move4Button.setOnAction(e -> {
 			allyAttack(move4);
 		});
+		move4Button.setMinWidth(100);
 
 		menu.getChildren().clear();
 		menu.add(move1Button, 0, 0);
@@ -211,24 +267,35 @@ public class PokeBattle extends Application {
 		double dmg = currentEnemy.compareType(move) * power * (currentAlly.getLevel() / 100.0);
 		currentEnemy.setCurrentHP((currentEnemy.getCurrentHP() - dmg));
 		enemyHealth.setProgress(currentEnemy.getCurrentHP() / currentEnemy.getMaxHP());
-		// Runnable allyAttackStatus = new Runnable() {
-		// 	public void run() {
-		// 		changeStatus(3, move);
-		// 	}
-		// };
-		// scheduler.schedule(allyAttackStatus, 1, TimeUnit.SECONDS);
 		changeStatus(3, move);
 		changeStatus(5, move);
 		if (currentEnemy.isFainted()) {
 			status.setText(String.format("%s fainted!", currentEnemy.getName()));
 			System.out.println(String.format("%s fainted!", currentEnemy.getName()));
-			System.exit(0);
+			//select next enemy
+			boolean found = false;
+			for (Pokemon eachPokemon: enemyList) {
+				if (!eachPokemon.isFainted()) {
+					found = true;
+					currentEnemy = eachPokemon;
+					try {
+						enemyImg = new Image(new FileInputStream(currentEnemy.getImage()));
+					} catch (Exception e) {}
+					image.setImage(enemyImg);
+					enemyName.setText(currentEnemy.getName());
+					enemyLvl.setText(String.format("lvl. %d", currentEnemy.getLevel()));
+					enemyHealth.setProgress(currentEnemy.getCurrentHP() / currentEnemy.getMaxHP());
+					break;
+				}
+			}
+			if (!found) {
+				System.exit(0);
+			}
+		} else {
+			enemyAttack();
 		}
-		enemyAttack();
 		mainMenu();
 	}
-
-
 
 	public void mainMenu() {
 		menu.getChildren().clear();
@@ -237,6 +304,26 @@ public class PokeBattle extends Application {
 		menu.add(pokemon, 0, 1);
 		menu.add(run, 1, 1);
 		changeStatus(1);
+	}
+
+	public void itemView() {
+		menu.getChildren().clear();
+		potion = new Button(String.format("potion x%d", potionTotal));
+		changeStatus(3);
+		potion.setOnAction(e -> {
+			if (potionTotal <= 0) {
+				status.setText("No potions left...");
+				mainMenu();
+			} else {
+				currentAlly.setCurrentHP(currentAlly.getCurrentHP() + 20);
+				allyHealth.setProgress(currentAlly.getCurrentHP() / currentAlly.getMaxHP());
+				status.setText("Used a potion!");
+				potionTotal--;
+				enemyAttack();
+				mainMenu();
+			}
+		});
+		menu.add(potion, 0, 0);
 	}
 
 	public void enemyAttack() {
@@ -252,15 +339,81 @@ public class PokeBattle extends Application {
 		if (currentAlly.isFainted()) {
 			status.setText(String.format("%s fainted!", currentAlly.getName()));
 			System.out.println(String.format("%s fainted!", currentAlly.getName()));
-			System.exit(0);
+			//select next ally
+			boolean found = false;
+			for (Pokemon eachPokemon: allyList) {
+				if (!eachPokemon.isFainted()) {
+					found = true;
+					currentAlly = eachPokemon;
+					try {
+						allyImg = new Image(new FileInputStream(currentAlly.getImage()));
+					} catch (Exception e) {}
+					image2.setImage(allyImg);
+					allyName.setText(currentAlly.getName());
+					allyLvl.setText(String.format("lvl. %d", currentAlly.getLevel()));
+					allyHealth.setProgress(currentAlly.getCurrentHP() / currentAlly.getMaxHP());
+					break;
+				}
+			}
+			if (!found) {
+				System.exit(0);
+			}
+		}
+	}
+
+	public void changeAllyPokemon() {
+		menu.getChildren().clear();
+		poke1.setOnAction(e -> {
+			changePokemon(allyList[0]);
+			enemyAttack();
+			mainMenu();
+		});
+		poke2.setOnAction(e -> {
+			changePokemon(allyList[1]);
+			enemyAttack();
+			mainMenu();
+		});
+		poke3.setOnAction(e -> {
+			changePokemon(allyList[2]);
+			enemyAttack();
+			mainMenu();
+		});
+		poke4.setOnAction(e -> {
+			changePokemon(allyList[3]);
+			enemyAttack();
+			mainMenu();
+		});
+		menu.add(poke1, 0, 0);
+		menu.add(poke2, 1, 0);
+		menu.add(poke3, 0, 1);
+		menu.add(poke4, 1, 1);
+	}
+
+	public void changePokemon(Pokemon ally) {
+		if (ally.isFainted()) {
+			mainMenu();
+		} else if (ally == currentAlly) {
+			mainMenu();
+		}else {
+			currentAlly = ally;
+			try {
+				allyImg = new Image(new FileInputStream(currentAlly.getImage()));
+			} catch (Exception e) {}
+			image2.setImage(allyImg);
+			allyName.setText(currentAlly.getName());
+			allyLvl.setText(String.format("lvl. %d", currentAlly.getLevel()));
+			allyHealth.setProgress(currentAlly.getCurrentHP() / currentAlly.getMaxHP());
 		}
 	}
 
 	public void changeStatus(int option) {
-		if (option == 1)
+		if (option == 1) {
 			status.setText(String.format("What will %s do?", currentAlly.getName()));
-		else if (option == 2)
+		} else if (option == 2) {
 			status.setText("Choose a move.");
+		} else if (option == 3) {
+			status.setText("Choose an item.");
+		}
 	}
 
 	public void changeStatus(int option, Move move) {
