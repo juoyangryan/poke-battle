@@ -1,3 +1,8 @@
+/**
+ * @author jchen824
+ * @version 1.0
+ */
+
 public class Pokemon {
     private String name;
     private int level;
@@ -8,6 +13,16 @@ public class Pokemon {
     private String type;
     private boolean fainted;
     private String image;
+
+    /**
+    *@param n fat
+    *@param l fat
+    *@param h fat
+    *@param a fat
+    *@param t fat
+    *@param i fat
+    *@param move fat
+    */
 
     public Pokemon(String n, int l, double h, int a, String t, String i, Move... move) {
         name = n;
@@ -20,33 +35,65 @@ public class Pokemon {
         image = i;
     }
 
+    /**
+    *@return fat
+    */
+
     public String getImage() {
         return image;
     }
+
+    /**
+    *@return fat
+    */
 
     public String getName() {
         return name;
     }
 
+    /**
+    *@return fat
+    */
+
     public int getLevel() {
         return level;
     }
+
+    /**
+    *@return fat
+    */
 
     public int getAtk() {
         return atk;
     }
 
+    /**
+    *@return fat
+    */
+
     public double getMaxHP() {
         return maxHP;
     }
+
+    /**
+    *@return fat
+    */
 
     public double getCurrentHP() {
         return currentHP;
     }
 
+    /**
+    *@return fat
+    */
+
     public Move[] getMoves() {
         return moves;
     }
+
+    /**
+    *@param currentHP fat
+    */
 
     public void setCurrentHP(double currentHP) {
         this.currentHP = currentHP;
@@ -54,6 +101,11 @@ public class Pokemon {
             fainted = true;
         }
     }
+
+    /**
+    *@param move fat
+    *@return fat
+    */
 
     public double compareType(Move move) {
         if (move.getType().equals(type)) {
@@ -86,9 +138,17 @@ public class Pokemon {
         return 1;
     }
 
+    /**
+    *@return fat
+    */
+
     public boolean isFainted() {
         return fainted;
     }
+
+    /**
+    *@param fainted fat
+    */
 
     public void setFainted(boolean fainted) {
         this.fainted = fainted;
